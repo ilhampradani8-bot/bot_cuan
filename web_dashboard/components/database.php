@@ -3,7 +3,12 @@
 
 // GUNAKAN ABSOLUTE PATH (Jalur Pasti) KE DATABASE UTAMA RUST
 // Sesuaikan dengan path server Mas: /home/ilham/projects/bot_cuan/bot_cuan.db
-$db_path = '/home/ilham/projects/bot_cuan/bot_cuan.db';
+// PASTE BLOK BARU INI
+// Use a relative path to locate the database file.
+// __DIR__ gets the directory of the current file (components).
+// '/../../' goes up two levels to the project root.
+$db_path = __DIR__ . '/../../bot_cuan.db';
+
 
 try {
     $pdo = new PDO("sqlite:" . $db_path);

@@ -11,38 +11,43 @@ require_once __DIR__ . '/../PHPMailer/SMTP.php';
 
 // KITA UBAH NAMA FUNGSI JADI: sendMail
 // Parameter dibuat dinamis: $to, $subject, $message
+// PASTE BLOK BARU INI
 function sendMail($to, $subject, $messageHTML) {
+    // Create a new PHPMailer instance
     $mail = new PHPMailer(true);
+
     try {
-        // --- 1. CONFIG SERVER (SAMA SEPERTI YANG MAS PUNYA) ---
-        $mail->SMTPDebug = 0; 
-        $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
-        $mail->SMTPAuth   = true;
-        // GANTI DENGAN EMAIL & APP PASSWORD MAS
-        $mail->Username   = 'hacker.ai.prof@gmail.com'; 
-        $mail->Password   = 'jjmmjehotkardvwh'; 
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = 587;
+        // --- 1. SERVER CONFIGURATION (Now using Environment Variables) ---
+        $mail->SMTPDebug = 0;                                       // Disable verbose debug output for production
+        $mail->isSMTP();                                            // Set mailer to use SMTP
+        $mail->Host       = 'smtp.gmail.com';                       // Specify main SMTP server (Gmail)
+        $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
 
-        // Bypass SSL (Penting untuk Linux Alpine/Localhost)
-        $mail->SMTPOptions = array(
-            'ssl' => array(
-                'verify_peer' => false,
-                'verify_peer_name' => false,
-                'allow_self_signed' => true
-            )
-        );
+        // Fetch credentials from environment variables for security
+        $smtpUser = getenv('SMTP_USER');
+        $smtpPass = getenv('SMTP_PASS');
 
-        // --- 2. PENGIRIM & PENERIMA ---
-        $mail->setFrom('no-reply@sniperbot.com', 'Sniper Bot Admin');
-        $mail->addAddress($to);
+        // Stop if credentials are not set
+        if (!$smtpUser || !$smtpPass) {
+            // Do not expose detailed errors to the user in production
+            error_log("Mailer Error: SMTP credentials are not configured.");
+            return false;
+        }
 
-        // --- 3. KONTEN EMAIL (DINAMIS) ---
-        $mail->isHTML(true);
-        $mail->Subject = $subject;
+        $mail->Username   = $smtpUser;                              // SMTP username
+        $mail->Password   = $smtpPass;                              // SMTP password (use App Password for Gmail)
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;          // Enable TLS encryption
+        $mail->Port       = 587;                                    // TCP port for TLS
+
+        // --- 2. SENDER & RECIPIENT ---
+        $mail->setFrom('no-reply@tradingsafe.com', 'TradingSafe System'); // Set the 'From' address
+        $mail->addAddress($to);                                     // Add a recipient
+
+        // --- 3. EMAIL CONTENT (Dynamic) ---
+        $mail->isHTML(true);                                        // Set email format to HTML
+        $mail->Subject = $subject;                                  // The subject of the email
         
-        // Kita bungkus pesan dalam Template HTML yang rapi
+        // A clean HTML template for the email body
         $mail->Body    = "
             <div style='font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 8px; max-width: 400px; background-color: #ffffff;'>
                 <h2 style='color: #1e3a8a; text-align: center; border-bottom: 2px solid #f3f4f6; padding-bottom: 10px;'>TradingSafe System</h2>
@@ -50,21 +55,22 @@ function sendMail($to, $subject, $messageHTML) {
                     $messageHTML
                 </div>
                 <p style='font-size: 11px; color: #999; margin-top: 20px; text-align: center; border-top: 1px solid #eee; padding-top: 10px;'>
-                    Email ini dikirim otomatis oleh sistem TradingSafe.
+                    This is an automated email from the TradingSafe system.
                 </p>
             </div>";
         
-        // Versi text polos buat jaga-jaga
+        // Plain text version for non-HTML mail clients
         $mail->AltBody = strip_tags($messageHTML);
 
         $mail->send();
-        return true;
+        return true; // Return true on success
     } catch (Exception $e) {
-        // Mas bisa uncomment baris bawah ini kalau mau lihat detail errornya di layar
-        // echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-        return false;
+        // Log the detailed error on the server, don't show it to the user
+        error_log("Message could not be sent. Mailer Error: {$mail->ErrorInfo}");
+        return false; // Return false on failure
     }
 }
+
 
 function sendVerificationEmail($to, $code) {
     $subject = "Verifikasi Akun TradingSafe";

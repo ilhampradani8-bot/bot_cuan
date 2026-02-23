@@ -20,288 +20,313 @@
 </head>
 <body class="text-slate-900 bg-white">
 
-<nav class="fixed w-full z-[100] glass-nav border-b border-slate-100" x-data="{ openLayanan: false }">
-    <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-        
-        <div class="text-2xl font-extrabold text-blue-900 tracking-tight cursor-pointer" onclick="window.location.href='index.php'">
-            Trading<span class="text-blue-600">Safe</span>
-        </div>
+<?php 
+// Start session globally if not started yet
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
 
-        <div class="hidden lg:flex space-x-10 text-sm font-semibold text-slate-600">
-            <button @click="openLayanan = !openLayanan" class="flex items-center gap-1 hover:text-blue-600 transition outline-none">
-                Layanan 
-                <svg class="w-4 h-4 transition-transform" :class="openLayanan ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-            </button>
-            <a href="#cara-kerja" class="hover:text-blue-600 transition">Cara Kerja</a>
-            <a href="#faq" class="hover:text-blue-600 transition">FAQ</a>
-            <a href="#harga" class="hover:text-blue-600 transition">Harga</a>
-        </div>
+<?php require_once 'web_dashboard/components/navbar_index.php'; ?>
 
-        <div class="flex items-center space-x-4">
-            <a href="web_dashboard/login.php" class="text-sm font-bold text-slate-700 hover:text-blue-600">Login</a>
-            <a href="web_dashboard/register.php" class="bg-blue-600 text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition">
-                Mulai Gratis
-            </a>
+<!-- ================================================================================= -->
+<!-- 1. NEW HERO SECTION BLOCK (TEXT-ONLY) -->
+<!-- Find and delete the existing hero <section>...</section> block. -->
+<!-- Then, paste this new block in its place. -->
+<!-- ================================================================================= -->
+<section class="relative bg-gradient-to-br from-slate-900 via-slate-800 to-blue-900 text-white overflow-hidden">
+    <!-- Decorative background glows for visual depth, without an image. -->
+    <div class="absolute -top-40 -right-40 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl opacity-50"></div>
+    <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl opacity-50"></div>
+
+    <!-- This is the main container, centering content vertically and horizontally. -->
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Using flexbox to center the content block in the available space. -->
+        <div class="flex flex-col justify-center items-center min-h-[75vh] py-20 text-center">
+            
+            <!-- This container holds all the text content. -->
+            <div>
+                <!-- Main Headline: The primary message of the platform. -->
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-100 to-slate-400">
+                    Automated Trading,<br> Elevated Performance.
+                </h1>
+                <!-- Sub-headline: Provides more context and value proposition, centered with a max-width. -->
+                <p class="mt-6 max-w-2xl mx-auto text-lg text-slate-300">
+                    Manfaatkan kekuatan bot trading berkinerja tinggi yang dirancang untuk kecepatan, keamanan, dan presisi di pasar crypto.
+                </p>
+
+                <!-- Google Login Button: The primary call-to-action for users. -->
+                <div class="mt-10">
+                    <a href="web_dashboard/login.php" class="inline-flex items-center justify-center bg-white text-slate-800 font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-slate-200 transition-colors duration-300">
+                        <!-- Google Icon SVG for visual identity. -->
+                        <svg class="w-5 h-5 mr-3" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"></path><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"></path><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571l6.19,5.238C42.022,35.244,44,30.036,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path></svg>
+                        Login with Google
+                    </a>
+                </div>
+
+                <!-- Key Statistics Section: Highlights key metrics and platform milestones. -->
+                <div class="mt-16 grid grid-cols-2 sm:grid-cols-3 gap-8 text-center max-w-3xl mx-auto">
+                    <div>
+                        <p class="text-3xl font-bold text-white">60B+</p>
+                        <p class="mt-1 text-xs text-slate-400 uppercase tracking-wider">Monthly Trading Volume</p>
+                    </div>
+                    <div>
+                        <p class="text-3xl font-bold text-white">6Y+</p>
+                        <p class="mt-1 text-xs text-slate-400 uppercase tracking-wider">Has Offered Service For</p>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <p class="text-3xl font-bold text-white">5M+</p>
+                        <p class="mt-1 text-xs text-slate-400 uppercase tracking-wider">Global Users</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
-
-    <div x-show="openLayanan" 
-         x-transition:enter="transition ease-out duration-200"
-         x-transition:enter-start="opacity-0 -translate-y-4"
-         x-transition:enter-end="opacity-100 translate-y-0"
-         x-transition:leave="transition ease-in duration-150"
-         x-transition:leave-start="opacity-100 translate-y-0"
-         x-transition:leave-end="opacity-0 -translate-y-4"
-         @click.away="openLayanan = false"
-         class="absolute left-0 w-full bg-white border-b border-slate-200 shadow-2xl py-12">
-        
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                
-                <a href="#" class="group p-4 rounded-xl hover:bg-slate-50 transition">
-                    <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    </div>
-                    <h4 class="font-bold text-slate-900 text-sm mb-1">Trading Otomatis 24/7</h4>
-                    <p class="text-[11px] text-slate-500 leading-relaxed">Eksekusi tanpa henti di server cloud VPS khusus kami.</p>
-                </a>
-
-                <a href="#" class="group p-4 rounded-xl hover:bg-slate-50 transition">
-                    <div class="w-10 h-10 bg-green-50 text-green-600 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-600 group-hover:text-white transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z"/></svg>
-                    </div>
-                    <h4 class="font-bold text-slate-900 text-sm mb-1">Laporan Profit</h4>
-                    <p class="text-[11px] text-slate-500 leading-relaxed">Analisis performa pertumbuhan aset mingguan & bulanan.</p>
-                </a>
-
-                <a href="#" class="group p-4 rounded-xl hover:bg-slate-50 transition">
-                    <div class="w-10 h-10 bg-orange-50 text-orange-600 rounded-lg flex items-center justify-center mb-4 group-hover:bg-orange-600 group-hover:text-white transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                    </div>
-                    <h4 class="font-bold text-slate-900 text-sm mb-1">Kalkulator Trading</h4>
-                    <p class="text-[11px] text-slate-500 leading-relaxed">Simulasi kalkulasi profit dan risiko sebelum eksekusi.</p>
-                </a>
-
-                <a href="#" class="group p-4 rounded-xl hover:bg-slate-50 transition">
-                    <div class="w-10 h-10 bg-red-50 text-red-600 rounded-lg flex items-center justify-center mb-4 group-hover:bg-red-600 group-hover:text-white transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                    </div>
-                    <h4 class="font-bold text-slate-900 text-sm mb-1">Manajemen Risiko</h4>
-                    <p class="text-[11px] text-slate-500 leading-relaxed">Fitur stop-loss dan proteksi saldo otomatis.</p>
-                </a>
-
-                <a href="#" class="group p-4 rounded-xl hover:bg-slate-50 transition">
-                    <div class="w-10 h-10 bg-purple-50 text-purple-600 rounded-lg flex items-center justify-center mb-4 group-hover:bg-purple-600 group-hover:text-white transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5s3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                    </div>
-                    <h4 class="font-bold text-slate-900 text-sm mb-1">Edukasi & Training</h4>
-                    <p class="text-[11px] text-slate-500 leading-relaxed">Panduan strategi sniper dan tutorial penggunaan bot.</p>
-                </a>
-
-                <a href="#" class="group p-4 rounded-xl hover:bg-slate-50 transition">
-                    <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center mb-4 group-hover:bg-indigo-600 group-hover:text-white transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    </div>
-                    <h4 class="font-bold text-slate-900 text-sm mb-1">Integrasi Cepat</h4>
-                    <p class="text-[11px] text-slate-500 leading-relaxed">Hubungkan API Key Bursa Anda dalam hitungan menit.</p>
-                </a>
-
-                <a href="https://wa.me/6288971071138" class="group p-4 rounded-xl hover:bg-slate-50 transition">
-                    <div class="w-10 h-10 bg-yellow-50 text-yellow-600 rounded-lg flex items-center justify-center mb-4 group-hover:bg-yellow-600 group-hover:text-white transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                    </div>
-                    <h4 class="font-bold text-slate-900 text-sm mb-1">CS Support 24/7</h4>
-                    <p class="text-[11px] text-slate-500 leading-relaxed">Bantuan teknis langsung dari developer melalui WhatsApp.</p>
-                </a>
-
-            </div>
-        </div>
-    </div>
-</nav>
-
-    <header class="pt-40 pb-20 hero-gradient px-6">
-        <div class="max-w-5xl mx-auto text-center">
-            <span class="bg-blue-100 text-blue-700 text-[10px] font-extrabold uppercase tracking-widest px-4 py-1.5 rounded-full mb-6 inline-block">
-                🚀 Multi-Exchange Sniper Bot Engine
-            </span>
-            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-8">
-                Satu Bot untuk <br> <span class="text-blue-600">Semua Bursa Crypto.</span>
-            </h1>
-            <p class="text-lg md:text-xl text-slate-500 mb-10 max-w-2xl mx-auto leading-relaxed">
-                Optimalkan profit Anda dengan sniper bot berbasis Rust. Terintegrasi dengan Indodax dan segera hadir untuk bursa global lainnya.
-            </p>
-            
-            <div id="integrasi" class="mt-10 flex flex-wrap justify-center items-center gap-8 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
-                <span class="font-bold text-xl">INDODAX</span>
-                <span class="font-bold text-xl">BINANCE</span>
-                <span class="font-bold text-xl">BYBIT</span>
-                <span class="font-bold text-xl">OKX</span>
-                <span class="font-bold text-xl">KUCOIN</span>
-                <span class="font-bold text-xl">TOKOCRYPTO</span>
-            </div>
-            
-            <div class="mt-12 flex flex-col md:flex-row justify-center gap-4">
-                <a href="web_dashboard/register.php" class="bg-slate-900 text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-slate-800 transition shadow-2xl">
-                    Daftar & Hubungkan API
-                </a>
-            </div>
-        </div>
-    </header>
-
-        <section id="fitur" class="py-24 bg-white border-t border-slate-50">
-    <div class="max-w-4xl mx-auto px-6 text-center">
-        
-        <h2 class="text-3xl md:text-4xl font-extrabold mb-4 text-slate-900">Standar Keamanan & Infrastruktur</h2>
-        <p class="text-slate-500 mb-16 max-w-2xl mx-auto">TradingSafe dibangun di atas infrastruktur militer untuk memastikan keamanan aset dan kecepatan eksekusi tanpa kompromi.</p>
-
-        <div class="grid md:grid-cols-2 gap-y-12 gap-x-16 text-left">
-            
-            <div class="flex items-start gap-5">
-                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                </div>
-                <div>
-                    <h4 class="font-bold text-slate-900 mb-1">Engine Rust Performa Tinggi</h4>
-                    <p class="text-xs text-slate-500 leading-relaxed">Menggunakan bahasa pemrograman Rust (teknologi inti Blockchain Solana & Polkadot) untuk menjamin eksekusi tanpa delay.</p>
-                </div>
-            </div>
-
-            <div class="flex items-start gap-5">
-                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                </div>
-                <div>
-                    <h4 class="font-bold text-slate-900 mb-1">Enkripsi AES-256 & TLS 1.3</h4>
-                    <p class="text-xs text-slate-500 leading-relaxed">Seluruh API Key dan data sensitif dienkripsi menggunakan standar militer AES-256 di sisi server.</p>
-                </div>
-            </div>
-
-            <div class="flex items-start gap-5">
-                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04kM12 21.48l.307-.13c4.757-2.013 8.193-6.143 8.193-10.99 0-1.44-.265-2.822-.751-4.09l-.13-.306M12 21.48l-.307-.13C6.936 19.337 3.5 15.207 3.5 10.36c0-1.44.265-2.822.751-4.09l.13-.306"/></svg>
-                </div>
-                <div>
-                    <h4 class="font-bold text-slate-900 mb-1">Kepatuhan OJK, Bappebti & OSS</h4>
-                    <p class="text-xs text-slate-500 leading-relaxed">Terdaftar resmi sebagai penyelenggara teknologi (OSS NIB) dan patuh terhadap regulasi perdagangan kripto di Indonesia.</p>
-                </div>
-            </div>
-
-            <div class="flex items-start gap-5">
-                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                </div>
-                <div>
-                    <h4 class="font-bold text-slate-900 mb-1">Sertifikasi ISO 27001 & SOC2</h4>
-                    <p class="text-xs text-slate-500 leading-relaxed">Audit keamanan informasi internasional ISO 27001 dan kepatuhan SOC2 Type II untuk integritas data pengguna.</p>
-                </div>
-            </div>
-
-            <div class="flex items-start gap-5">
-                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                </div>
-                <div>
-                    <h4 class="font-bold text-slate-900 mb-1">Admin & CS Reader 24/7</h4>
-                    <p class="text-xs text-slate-500 leading-relaxed">Tim bantuan teknis profesional yang siap membantu kendala operasional Anda kapan pun melalui jalur prioritas.</p>
-                </div>
-            </div>
-
-            <div class="flex items-start gap-5">
-                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-                </div>
-                <div>
-                    <h4 class="font-bold text-slate-900 mb-1">Infrastruktur Multi-Cloud</h4>
-                    <p class="text-xs text-slate-500 leading-relaxed">Server redundan di Singapura & Jerman dengan SLA Uptime 99.99% untuk menjamin bot terus berjalan tanpa henti.</p>
-                </div>
-            </div>
-
-        </div>
-        </div>
 </section>
 
-    <section id="harga" class="py-24 bg-slate-900 text-white">
-    <div class="max-w-6xl mx-auto px-6">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl font-extrabold mb-4">Mulai Trading Presisi Hari Ini</h2>
-            <p class="text-slate-400">Pilih akses penuh atau konsultasikan strategi Anda bersama tim ahli kami.</p>
+
+<!-- ================================================================================= -->
+<!-- 2. NEW FEATURES SECTION -->
+<!-- Paste this entire block between the hero section and the footer. -->
+<!-- ================================================================================= -->
+<style>
+    /* Custom CSS for the animated grid background and hiding the scrollbar */
+    /* Keyframes for the grid movement animation */
+    @keyframes moveGrid {
+        from { background-position: 0 0; }
+        to { background-position: 100px 50px; }
+    }
+    /* Class to apply the animated grid */
+    .animated-grid-background {
+        position: absolute; /* Takes it out of the normal document flow */
+        inset: 0; /* Stretches it to cover the parent */
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(to right, #e5e7eb 1px, transparent 1px), 
+            linear-gradient(to bottom, #e5e7eb 1px, transparent 1px); /* Creates grid lines */
+        background-size: 50px 50px; /* Size of the grid cells */
+        mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black, transparent 70%); /* Fades out the grid */
+        animation: moveGrid 5s linear infinite; /* Applies the movement animation */
+        opacity: 0.5;
+    }
+    /* Utility to hide scrollbars on scrollable elements */
+    .scrollbar-hide::-webkit-scrollbar { display: none; } /* For Chrome, Safari, and Opera */
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; } /* For IE/Edge and Firefox */
+</style>
+
+<section class="relative bg-white py-20 lg:py-24 overflow-hidden">
+    <!-- The animated grid background div -->
+    <div class="animated-grid-background"></div>
+    
+    <!-- Content container, positioned above the background grid -->
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header: Title and subtitle -->
+        <div class="text-center max-w-3xl mx-auto">
+            <h2 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+                Dirancang untuk Setiap Level Trader
+            </h2>
+            <p class="mt-4 text-lg text-slate-600">
+                Dari mode satu-klik yang simpel hingga kustomisasi penuh, temukan alat yang tepat untuk mendukung strategi trading Anda.
+            </p>
         </div>
 
-        <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            
-            <div class="bg-white text-slate-900 rounded-3xl p-10 relative border-4 border-blue-600 shadow-2xl shadow-blue-500/20">
-                <div class="absolute -top-5 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-6 py-2 rounded-full text-[11px] font-black uppercase tracking-widest shadow-lg">
-                    🔥 Early Access - Sisa 10 Slot
-                </div>
-                
-                <h3 class="text-xl font-bold mb-2">Premium Sniper Access</h3>
-                <p class="text-xs text-slate-400 mb-6">Akses penuh ke semua fitur mesin Rust.</p>
-                
-                <div class="mb-8">
-                    <span class="text-sm text-slate-400 line-through">Rp 500.000</span>
-                    <div class="flex items-baseline gap-1">
-                        <span class="text-5xl font-black text-blue-700">Rp 50K</span>
-                        <span class="text-slate-500 font-medium">/ bulan</span>
+        <!-- Horizontal Scrollable Container for Feature Cards -->
+        <div class="mt-16">
+            <!-- This div enables horizontal scrolling with a gentle fading edge on the right -->
+            <div class="relative">
+                <div class="flex overflow-x-auto space-x-6 sm:space-x-8 pb-8 scrollbar-hide -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
+                    
+                    <!-- Feature Card 1: Easy Mode -->
+                    <div class="flex-shrink-0 w-72 bg-white border border-slate-200 rounded-2xl shadow-lg p-6">
+                        <h3 class="font-bold text-slate-800">Easy Mode</h3>
+                        <p class="mt-2 text-sm text-slate-500">Mulai trading hanya dengan beberapa klik. Sempurna untuk pemula.</p>
                     </div>
-                </div>
 
-                <ul class="text-left space-y-4 mb-10 text-sm text-slate-600">
-                    <li class="flex items-center gap-3 font-medium">
-                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                        Unlimited API Key Integration
+                    <!-- Feature Card 2: Pro Mode -->
+                    <div class="flex-shrink-0 w-72 bg-white border border-slate-200 rounded-2xl shadow-lg p-6">
+                        <h3 class="font-bold text-slate-800">Pro Mode</h3>
+                        <p class="mt-2 text-sm text-slate-500">Kontrol penuh atas setiap parameter bot untuk trader berpengalaman.</p>
+                    </div>
+
+                    <!-- Feature Card 3: Auto Pilot -->
+                    <div class="flex-shrink-0 w-72 bg-white border border-slate-200 rounded-2xl shadow-lg p-6">
+                        <h3 class="font-bold text-slate-800">Auto Pilot</h3>
+                        <p class="mt-2 text-sm text-slate-500">Biarkan bot bekerja 24/7 menjalankan strategi Anda secara otomatis.</p>
+                    </div>
+
+                    <!-- Feature Card 4: Anti Panic -->
+                    <div class="flex-shrink-0 w-72 bg-white border border-slate-200 rounded-2xl shadow-lg p-6">
+                        <h3 class="font-bold text-slate-800">Anti Panic</h3>
+                        <p class="mt-2 text-sm text-slate-500">Eksekusi Take Profit & Stop Loss otomatis untuk menghindari keputusan emosional.</p>
+                    </div>
+
+                    <!-- Feature Card 5: Trading Journal -->
+                    <div class="flex-shrink-0 w-72 bg-white border border-slate-200 rounded-2xl shadow-lg p-6">
+                        <h3 class="font-bold text-slate-800">Trading Journal</h3>
+                        <p class="mt-2 text-sm text-slate-500">Semua transaksi tercatat rapi untuk analisis dan evaluasi performa.</p>
+                    </div>
+
+                    <!-- Feature Card 6: Custom Indicator -->
+                    <div class="flex-shrink-0 w-72 bg-white border border-slate-200 rounded-2xl shadow-lg p-6">
+                        <h3 class="font-bold text-slate-800">Custom Indicator</h3>
+                        <p class="mt-2 text-sm text-slate-500">Gunakan indikator kustom Anda sendiri untuk sinyal trading yang unik.</p>
+                    </div>
+
+                    <!-- Feature Card 7: Trailing Stop -->
+                    <div class="flex-shrink-0 w-72 bg-white border border-slate-200 rounded-2xl shadow-lg p-6">
+                        <h3 class="font-bold text-slate-800">Trailing Stop</h3>
+                        <p class="mt-2 text-sm text-slate-500">Amankan profit sambil memberi ruang bagi aset untuk terus naik.</p>
+                    </div>
+
+                </div>
+                <!-- Fading gradient on the right to indicate more content -->
+                <div class="absolute top-0 bottom-0 right-0 w-24 bg-gradient-to-l from-white pointer-events-none"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ================================================================================= -->
+<!-- 3. NEW FUND SECURITY SECTION -->
+<!-- Find and delete the old <section id="fitur">...</section> block. -->
+<!-- Then, paste this new block in its place. -->
+<!-- ================================================================================= -->
+<section id="security" class="bg-white py-20 lg:py-24">
+    <!-- Main container for the security section content. -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <!-- Titles to introduce the section's theme: security. -->
+        <div class="text-center max-w-3xl mx-auto">
+            <h2 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+                Fund Security is Our Fundamental Principle
+            </h2>
+            <p class="mt-4 text-lg text-slate-600">
+                Kami membangun platform ini di atas fondasi keamanan, kepatuhan, dan transparansi untuk melindungi aset Anda.
+            </p>
+        </div>
+
+        <!-- Grid container for the three security pillars. -->
+        <!-- It's a 3-column grid on large screens and a 1-column grid on smaller screens. -->
+        <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+
+            <!-- Pillar 1: Compliance Matrix -->
+            <div class="text-center">
+                <!-- Custom SVG icon for Compliance -->
+                <div class="flex justify-center items-center mx-auto w-16 h-16 bg-slate-100 rounded-2xl">
+                    <svg class="w-8 h-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286zm0 13.036h.008v.008h-.008v-.008z" /></svg>
+                </div>
+                <!-- Title for the pillar -->
+                <h3 class="mt-6 text-xl font-bold text-slate-900">Compliance Matrix</h3>
+                <!-- Description for the pillar, integrating project-specific details. -->
+                <p class="mt-2 text-slate-600">
+                    TradingSafe terdaftar melalui <strong>OSS</strong> dan dalam proses audit lisensi <strong>Bappebti & OJK</strong>. Infrastruktur kami mengacu pada standar <strong>ISO 27001</strong> dan <strong>SOC2 Type II</strong> untuk memastikan kepatuhan regulasi.
+                </p>
+            </div>
+
+            <!-- Pillar 2: Account Security -->
+            <div class="text-center">
+                <!-- Custom SVG icon for Account Security -->
+                <div class="flex justify-center items-center mx-auto w-16 h-16 bg-slate-100 rounded-2xl">
+                    <svg class="w-8 h-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" /></svg>
+                </div>
+                <!-- Title for the pillar -->
+                <h3 class="mt-6 text-xl font-bold text-slate-900">Account Security</h3>
+                <!-- Description for the pillar, integrating project-specific details. -->
+                <p class="mt-2 text-slate-600">
+                    Dengan protokol <i>Non-Custodial</i>, API key Anda dienkripsi via <strong>AES-256</strong>. Kami mewajibkan penonaktifan fitur withdrawal pada API, Google Authenticator, dan whitelist untuk keamanan maksimal.
+                </p>
+            </div>
+            
+            <!-- Pillar 3: 100% Reserves -->
+            <div class="text-center">
+                <!-- Custom SVG icon for Reserves -->
+                <div class="flex justify-center items-center mx-auto w-16 h-16 bg-slate-100 rounded-2xl">
+                    <svg class="w-8 h-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375" /></svg>
+                </div>
+                <!-- Title for the pillar -->
+                <h3 class="mt-6 text-xl font-bold text-slate-900">100% Reserves</h3>
+                <!-- Description for the pillar -->
+                <p class="mt-2 text-slate-600">
+                    Aset pengguna disimpan terpisah dari dana operasional. Kami menjaga rasio cadangan 100% dan menggunakan audit 'Merkle Tree' untuk membuktikan transparansi dana kami.
+                </p>
+                <a href="#" class="mt-4 inline-block text-blue-600 font-bold hover:underline">Lihat Audit Keamanan</a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ================================================================================= -->
+<!-- 4. ACCESSIBILITY SECTION (REVISED IMAGE PATH) -->
+<!-- Find and delete the old <section id="anywhere">...</section> block. -->
+<!-- Then, paste this new block in its place. -->
+<!-- ================================================================================= -->
+<section id="anywhere" class="bg-slate-50 py-20 lg:py-24 overflow-hidden">
+    <!-- Main container for the section content. -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Responsive grid layout: 2 columns on large screens, 1 on small. -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            
+            <!-- Left Column: Image -->
+            <!-- This column holds the visual representation of the app on multiple devices. -->
+            <div class="relative">
+                <!-- The main image is now loaded from the local project folder. -->
+                <img src="en.5ba4f5a10ab4e5cf.png" 
+                     alt="TradingSafe dashboard on phone and tablet" 
+                     class="relative z-10 rounded-lg shadow-xl">
+                
+                <!-- Decorative background blob for visual flair. -->
+                <div class="absolute -top-10 -left-10 w-80 h-80 bg-blue-200/50 rounded-full blur-3xl" aria-hidden="true"></div>
+            </div>
+
+            <!-- Right Column: Text Content & Call to Action -->
+            <!-- This column explains the benefit of accessing the platform anywhere. -->
+            <div class="text-center lg:text-left">
+                <!-- Main headline for the section. -->
+                <h2 class="text-3xl font-extrabold text-slate-900 sm:text-4xl">
+                    Trade Easily Anytime, Anywhere
+                </h2>
+                <!-- Descriptive paragraph. -->
+                <p class="mt-4 text-lg text-slate-600">
+                    Akses dashboard web TradingSafe yang responsif dari perangkat apa pun. Pantau pasar, kelola bot, dan analisis performa Anda dengan mudah, baik dari desktop di rumah maupun dari ponsel saat Anda bepergian.
+                </p>
+                
+                <!-- List of key features related to accessibility. -->
+                <ul class="mt-8 space-y-4 text-left inline-block">
+                    <!-- Feature 1: Responsive Dashboard -->
+                    <li class="flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-green-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span class="text-slate-700 font-medium">Dashboard Web Responsif</span>
                     </li>
-                    <li class="flex items-center gap-3 font-medium">
-                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                        Eksekusi Server-Side 24/7
+                    <!-- Feature 2: 24/7 Cloud Access -->
+                    <li class="flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-green-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span class="text-slate-700 font-medium">Akses 24/7 via Cloud</span>
                     </li>
-                    <li class="flex items-center gap-3 font-medium">
-                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                        Support Semua Pair Indodax
+                    <!-- Feature 3: No Installation Needed -->
+                    <li class="flex items-center">
+                        <svg class="w-6 h-6 mr-3 text-green-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        <span class="text-slate-700 font-medium">Tidak Perlu Instalasi</span>
                     </li>
                 </ul>
-
-                <a href="web_dashboard/register.php" class="block w-full bg-blue-600 text-white text-center py-4 rounded-2xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-100">
-                    Ambil Slot Promo Sekarang
-                </a>
-            </div>
-
-            <div class="bg-slate-800 rounded-3xl p-10 border border-slate-700 flex flex-col justify-between">
-                <div>
-                    <h3 class="text-xl font-bold mb-2">Belum Yakin?</h3>
-                    <p class="text-sm text-slate-400 mb-8 leading-relaxed">Lihat bagaimana algoritma kami bekerja secara real-time atau tanyakan langsung kendala teknis Anda.</p>
-                    
-                    <div class="space-y-6">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-xl">🧪</div>
-                            <div>
-                                <h4 class="text-sm font-bold">Simulator Profit</h4>
-                                <p class="text-[10px] text-slate-500">Uji strategi tanpa risiko aset asli.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-xl">👨‍💻</div>
-                            <div>
-                                <h4 class="text-sm font-bold">Direct Support</h4>
-                                <p class="text-[10px] text-slate-500">Bantuan setup API Key via remote.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-12 space-y-3">
-                    <a href="web_dashboard/register.php" class="block w-full bg-slate-100 text-slate-900 text-center py-4 rounded-2xl font-bold hover:bg-white transition">
-                        Mulai Simulasikan
-                    </a>
-                    <a href="https://wa.me/6288971071138?text=Halo%20Admin%20TradingSafe,%20saya%20tertarik%20dengan%20promo%20Early%20Access" target="_blank" class="block w-full border border-slate-600 text-white text-center py-4 rounded-2xl font-bold hover:bg-slate-700 transition flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                        Tanya di WA Admin
+                
+                <!-- Call to action button -->
+                <div class="mt-10">
+                    <a href="web_dashboard/easy.php" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg shadow-blue-500/30 transition-all">
+                        Buka Dashboard
                     </a>
                 </div>
             </div>
-
         </div>
     </div>
 </section>
+
 
 <section id="faq" class="py-24 bg-white border-t border-slate-100">
     <div class="max-w-4xl mx-auto px-6">
@@ -373,72 +398,93 @@
 </section>
 
 
-  <footer class="bg-slate-50 pt-20 pb-10 border-t border-slate-200">
-    <div class="max-w-7xl mx-auto px-6">
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-12 mb-16">
+<!-- ================================================================================= -->
+<!-- 2. NEW FOOTER BLOCK -->
+<!-- Find and delete the existing <footer>...</footer> block. -->
+<!-- Then, paste this new block in its place. -->
+<!-- ================================================================================= -->
+<footer class="bg-slate-900 text-slate-300 pt-20 pb-10">
+    <!-- This is the main container for the footer content, centered with a max-width. -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Community Call-to-Action -->
+        <!-- This section invites users to join the Telegram community for discussion. -->
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-white mb-4">Mari Berdiskusi dan Bertumbuh Bersama</h2>
+            <p class="mb-6 text-slate-400 max-w-2xl mx-auto">Punya pertanyaan, butuh bantuan, atau ingin berbagi strategi? Komunitas kami adalah tempatnya.</p>
+            <a href="https://t.me/+alUQbx_4tWZkYWY1" target="_blank" rel="noopener noreferrer" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg transition-colors duration-300 shadow-lg shadow-blue-500/20">
+                Gabung ke Komunitas Kami di Telegram
+            </a>
+        </div>
+
+        <!-- Footer Links Grid -->
+        <!-- A responsive grid layout to organize all the footer links into logical columns. -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 text-sm">
             
-            <div class="col-span-2">
-                <div class="text-2xl font-extrabold text-blue-900 tracking-tight mb-6">
-                    Trading<span class="text-blue-600">Safe</span>
-                </div>
-                <p class="text-sm text-slate-500 leading-relaxed mb-6 max-w-sm">
-                    Infrastruktur trading otomatis berperforma tinggi yang didukung oleh teknologi Rust. Memberikan presisi eksekusi tingkat milidetik untuk pasar aset digital global.
-                </p>
-                <div class="flex gap-4">
-                    <a href="#" class="text-slate-400 hover:text-blue-600 transition">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                    </a>
-                    <a href="#" class="text-slate-400 hover:text-blue-600 transition">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                    </a>
-                </div>
+            <!-- Column 1: About -->
+            <!-- Contains links related to the company, legal information, and policies. -->
+            <div class="space-y-4">
+                <h3 class="font-bold text-white uppercase tracking-wider text-xs">About</h3>
+                <ul class="space-y-3 font-medium text-slate-400">
+                    <li><a href="#" class="hover:text-white transition-colors">Fee</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Listing Application</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Privacy policy</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Disclaimer</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">User conduct code</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Terms of service</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Margin Facility Agreement</a></li>
+                </ul>
             </div>
-
-            <div>
-                <h5 class="text-xs font-bold uppercase tracking-widest text-slate-900 mb-6">Produk</h5>
-                <ul class="text-sm text-slate-500 space-y-4">
-                    <li><a href="#" class="hover:text-blue-600 transition">Sniper Bot Engine</a></li>
-                    <li><a href="#" class="hover:text-blue-600 transition">Auto-Rebalance</a></li>
-                    <li><a href="#" class="hover:text-blue-600 transition">API Documentation</a></li>
+            
+            <!-- Column 2: Services -->
+            <!-- Links for developer-focused services and other offerings. -->
+            <div class="space-y-4">
+                <h3 class="font-bold text-white uppercase tracking-wider text-xs">Services</h3>
+                <ul class="space-y-3 font-medium text-slate-400">
+                    <li><a href="#" class="hover:text-white transition-colors">Bug Bounty</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">API</a></li>
                 </ul>
             </div>
 
-            <div>
-                <h5 class="text-xs font-bold uppercase tracking-widest text-slate-900 mb-6">Sumber Daya</h5>
-                <ul class="text-sm text-slate-500 space-y-4">
-                    <li><a href="#fitur" class="hover:text-blue-600 transition">Keamanan Infrastruktur</a></li>
-                    <li><a href="#harga" class="hover:text-blue-600 transition">Harga & Lisensi</a></li>
-                    <li><a href="https://wa.me/6288971071138" class="hover:text-blue-600 transition">Pusat Bantuan</a></li>
+            <!-- Column 3: Tutorials -->
+            <!-- A collection of educational resources for users. -->
+            <div class="space-y-4">
+                <h3 class="font-bold text-white uppercase tracking-wider text-xs">Tutorials</h3>
+                <ul class="space-y-3 font-medium text-slate-400">
+                    <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Grid Trading Bot</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Video</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
                 </ul>
             </div>
 
-            <div>
-                <h5 class="text-xs font-bold uppercase tracking-widest text-slate-900 mb-6">Legalitas</h5>
-                <ul class="text-sm text-slate-500 space-y-4">
-                    <li><a href="#" class="hover:text-blue-600 transition">Kebijakan Privasi</a></li>
-                    <li><a href="#" class="hover:text-blue-600 transition">Syarat & Ketentuan</a></li>
-                    <li><a href="#" class="hover:text-blue-600 transition">Kepatuhan Regulasi</a></li>
+            <!-- Column 4: Contact -->
+            <!-- Channels for users to get in touch or find official information. -->
+            <div class="space-y-4">
+                <h3 class="font-bold text-white uppercase tracking-wider text-xs">Contact</h3>
+                <ul class="space-y-3 font-medium text-slate-400">
+                    <li><a href="mailto:support@tradingsafe.com" class="hover:text-white transition-colors">Email</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Live chat</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Announcements</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Official Verification</a></li>
                 </ul>
             </div>
-
-        </div>
-
-        <div class="border-t border-slate-200 pt-8 pb-8 flex flex-wrap gap-8 justify-center items-center opacity-60 grayscale">
-            <span class="text-[10px] font-bold tracking-tighter border border-slate-300 px-2 py-1 rounded">ISO 27001 CERTIFIED</span>
-            <span class="text-[10px] font-bold tracking-tighter border border-slate-300 px-2 py-1 rounded">SOC2 COMPLIANT</span>
-            <span class="text-[10px] font-bold tracking-tighter border border-slate-300 px-2 py-1 rounded">SECURED BY AES-256</span>
-            <span class="text-[10px] font-bold tracking-tighter border border-slate-300 px-2 py-1 rounded">BAPPEBTI COMPLIANT</span>
-        </div>
-
-        <div class="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-slate-200 gap-4">
-            <p class="text-[11px] text-slate-400 uppercase tracking-widest">
-                &copy; 2026 TradingSafe International. All rights reserved.
-            </p>
-            <div class="flex items-center gap-2">
-                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">All Systems Operational</span>
+            
+            <!-- Column 5 & 6: Copyright and Socials -->
+            <!-- This block spans two columns on larger screens for better visual balance. -->
+            <div class="col-span-2 space-y-4">
+                 <h3 class="font-bold text-white uppercase tracking-wider text-xs">TradingSafe</h3>
+                 <p class="text-slate-500">Platform bot trading otomatis dengan performa tinggi dan keamanan terjamin.</p>
+                 <!-- Social media icons can be added here later -->
             </div>
         </div>
+
+        <!-- Bottom Bar: Copyright -->
+        <!-- A separate bar at the very bottom for the copyright notice. -->
+        <div class="mt-16 pt-8 border-t border-slate-800 text-center text-slate-500">
+            <p>&copy; <?php echo date("Y"); ?> TradingSafe. All rights reserved.</p>
+        </div>
+
     </div>
 </footer>
 
