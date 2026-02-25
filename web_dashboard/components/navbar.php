@@ -4,33 +4,73 @@ $is_logged_in = isset($_SESSION['user_id']);
 $username = $is_logged_in ? ($_SESSION['username'] ?? 'User') : 'Guest';
 ?>
 
-<nav class="bg-white w-full z-40 border-b border-slate-200 shadow-sm">
+<nav class="bg-white w-full z-40 border-b border-slate-200 shadow-sm sticky top-0">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
-            <div class="flex items-center">
-                <a href="index.php" class="text-2xl font-bold text-slate-800">Trading<span class="text-blue-600">Safe</span>.</a>
+            <!-- Logo Section - Link ke Root Project (Keluar folder dashboard) -->
+            <div class="flex items-center flex-shrink-0">
+                <a href="../index.php" class="text-2xl font-black tracking-tight text-slate-800">
+                    Trading<span class="text-blue-600">Safe</span><span class="text-blue-600">.</span>
+                </a>
             </div>
+
+            <!-- Main Navigation Links -->
             <div class="hidden md:block">
-                <div class="ml-10 flex items-baseline space-x-4">
-                    <a href="index.php" class="text-slate-600 hover:bg-slate-100 hover:text-slate-900 px-3 py-2 rounded-md text-sm font-medium">Beranda</a>
-                    <a href="index.php#fitur" class="text-slate-600 hover:bg-slate-100 hover:text-slate-900 px-3 py-2 rounded-md text-sm font-medium">Fitur</a>
-                    <a href="index.php#harga" class="text-slate-600 hover:bg-slate-100 hover:text-slate-900 px-3 py-2 rounded-md text-sm font-medium">Harga</a>
+                <div class="ml-8 flex items-center space-x-3">
                     <?php if ($is_logged_in): ?>
-                        <a href="dashboard.php" class="bg-blue-100 text-blue-700 px-3 py-2 rounded-md text-sm font-bold">Dashboard Saya</a>
+                        <!-- Dashboard Button: Professional Dark Slate -->
+                        <a href="portfolio.php" class="bg-slate-800 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-slate-700 transition-all shadow-sm hover:shadow-md">
+                            Dashboard
+                        </a>
+                        
+                        <!-- Easy Mode: Clean Glassmorphism style -->
+                        <a href="easy.php" class="flex items-center gap-2 px-4 py-2 text-slate-600 bg-slate-50 hover:bg-white border border-slate-200 rounded-lg text-sm font-medium transition-all hover:border-green-400">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                            </span>
+                            Easy Mode
+                        </a>
+
+                        <!-- Pro Mode: Clean Glassmorphism style -->
+                        <a href="pro.php" class="flex items-center gap-2 px-4 py-2 text-slate-600 bg-slate-50 hover:bg-white border border-slate-200 rounded-lg text-sm font-medium transition-all hover:border-purple-400">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-purple-600"></span>
+                            </span>
+                            Pro Mode
+                        </a>
+                    <?php else: ?>
+                        <!-- Guest Links pointing back to main page anchors -->
+                        <a href="../index.php#fitur" class="text-slate-500 hover:text-slate-900 px-3 py-2 text-sm font-medium">Fitur</a>
+                        <a href="../index.php#harga" class="text-slate-500 hover:text-slate-900 px-3 py-2 text-sm font-medium">Harga</a>
                     <?php endif; ?>
                 </div>
             </div>
-            <div class="flex items-center">
+
+            <!-- Right Side: User Profile / Auth -->
+            <div class="flex items-center gap-4">
                 <?php if ($is_logged_in): ?>
-                     <span class="text-sm text-slate-600 mr-4">Halo, <strong><?= htmlspecialchars($username) ?></strong>!</span>
-                     <a href="?action=logout" class="bg-slate-200 text-slate-700 hover:bg-slate-300 px-3 py-2 rounded-md text-xs font-bold">Logout</a>
+                     <div class="hidden sm:flex flex-col items-end leading-none mr-2">
+                        <span class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Active User</span>
+                        <span class="text-sm font-bold text-slate-700"><?= htmlspecialchars($username) ?></span>
+                     </div>
+                     <a href="logout.php" class="group flex items-center gap-2 bg-red-50 text-red-600 hover:bg-red-600 hover:text-white px-4 py-2 rounded-lg text-xs font-bold transition-all border border-red-100">
+                        Logout
+                        <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                     </a>
                 <?php else: ?>
-                    <a href="login.php" class="bg-slate-800 text-white hover:bg-slate-900 px-4 py-2 rounded-md text-sm font-bold">Login</a>
+                    <a href="login.php" class="bg-blue-600 text-white hover:bg-blue-700 px-6 py-2 rounded-lg text-sm font-bold transition-all shadow-lg shadow-blue-200">
+                        Sign In
+                    </a>
                 <?php endif; ?>
             </div>
         </div>
     </div>
 </nav>
+
+
+
 
 <?php if ($is_logged_in): ?>
 <!-- === NEW Live Chat System === -->
@@ -100,15 +140,19 @@ $username = $is_logged_in ? ($_SESSION['username'] ?? 'User') : 'Guest';
         </div>
         
         <!-- View 3: FAQ -->
+                <!-- View 3: FAQ -->
         <div id="chat-view-faq" class="hidden h-full flex-col">
             <div class="p-3 bg-slate-800 text-white rounded-t-xl flex items-center gap-3">
                 <button id="faq-back-to-menu-btn" class="text-slate-300 hover:text-white">&larr; Kembali</button>
                 <h3 class="font-bold text-sm text-center flex-1">Tanya Bot (FAQ)</h3>
             </div>
-            <div id="faq-body" class="flex-1 p-3 overflow-y-auto">
-                <p class="text-center text-slate-500 text-sm p-4">Fitur ini sedang dalam pengembangan.</p>
+            <!-- FAQ content will be loaded here by JS -->
+            <div id="faq-body" class="flex-1 p-3 overflow-y-auto bg-slate-50">
+                <!-- Initial loading state -->
+                <p class="faq-loading text-center text-slate-400 text-sm p-4 animate-pulse">Memuat jawaban...</p>
             </div>
         </div>
+
 
     </div>
     
@@ -178,10 +222,12 @@ document.addEventListener('DOMContentLoaded', () => {
     backToMenuBtn.addEventListener('click', () => showView('menu'));
     faqBackToMenuBtn.addEventListener('click', () => showView('menu'));
 
-    showFaqBtn.addEventListener('click', () => {
+        showFaqBtn.addEventListener('click', () => {
         showView('faq');
-        // Nanti kita akan panggil fungsi untuk load FAQ di sini
+        // Load FAQs when the view is shown for the first time
+        loadChatFAQs(); 
     });
+
 
     startLiveChatBtn.addEventListener('click', () => {
         showView('live');
@@ -199,6 +245,63 @@ document.addEventListener('DOMContentLoaded', () => {
     function stopPolling() { /* ... (fungsi sama seperti sebelumnya) ... */ }
     function escapeHTML(str) { /* ... (fungsi sama seperti sebelumnya) ... */ }
     
+
+        // --- FAQ Logic ---
+    let faqsLoaded = false; // Flag to prevent multiple loads
+    async function loadChatFAQs() {
+        if (faqsLoaded) return; // Don't load if already loaded
+
+        const faqBody = document.getElementById('faq-body');
+        
+        try {
+            // Fetch FAQ data from the same API the admin panel uses
+            const response = await fetch('api/admin_get_faqs.php');
+            if (!response.ok) throw new Error('Failed to fetch FAQs.');
+            const data = await response.json();
+
+            faqBody.innerHTML = ''; // Clear loading message
+            
+            if (data.faqs && data.faqs.length > 0) {
+                const faqContainer = document.createElement('div');
+                faqContainer.className = 'space-y-2';
+
+                data.faqs.forEach(faq => {
+                    const item = document.createElement('div');
+                    item.className = 'bg-white border border-slate-200 rounded-lg overflow-hidden';
+
+                    const questionBtn = document.createElement('button');
+                    questionBtn.className = 'w-full p-3 text-left flex justify-between items-center';
+                    questionBtn.innerHTML = `
+                        <span class="text-xs font-bold text-slate-700">${escapeHTML(faq.question)}</span>
+                        <svg class="faq-arrow-chat w-4 h-4 text-slate-400 transition-transform transform flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    `;
+
+                    const answerDiv = document.createElement('div');
+                    answerDiv.className = 'hidden p-3 border-t border-slate-100 bg-white';
+                    answerDiv.innerHTML = `<p class="text-xs text-slate-600">${escapeHTML(faq.answer).replace(/\\n/g, '<br>')}</p>`;
+
+                    questionBtn.addEventListener('click', () => {
+                        answerDiv.classList.toggle('hidden');
+                        questionBtn.querySelector('.faq-arrow-chat').classList.toggle('rotate-180');
+                    });
+                    
+                    item.appendChild(questionBtn);
+                    item.appendChild(answerDiv);
+                    faqContainer.appendChild(item);
+                });
+                faqBody.appendChild(faqContainer);
+
+            } else {
+                faqBody.innerHTML = '<p class="text-center text-slate-500 text-sm p-4">Belum ada FAQ yang tersedia.</p>';
+            }
+            faqsLoaded = true; // Mark as loaded
+
+        } catch (error) {
+            console.error("Failed to load FAQs:", error);
+            faqBody.innerHTML = '<p class="text-center text-red-500 text-sm p-4">Gagal memuat daftar FAQ.</p>';
+        }
+    }
+
     // --> Salin semua fungsi live-chat dari kode sebelumnya ke sini <--
     // [ TEMPEL FUNGSI-FUNGSI INI DARI KODE LAMA ANDA ]
     // async function loadMessages(isPolling = false) { ... }

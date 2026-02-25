@@ -18,6 +18,10 @@ try {
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     
 } catch (PDOException $e) {
-    die("❌ Koneksi Database Gagal: " . $e->getMessage());
+    // Melempar kembali error agar bisa ditangkap oleh script yang memanggil,
+    // bukannya mematikan aplikasi secara paksa. Ini adalah praktik yang benar.
+    throw new PDOException($e->getMessage(), (int)$e->getCode());
 }
+
+
 ?>
