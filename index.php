@@ -344,9 +344,26 @@ if (session_status() === PHP_SESSION_NONE) {
                     </div>
                     <div>
                         <h4 class="font-bold text-slate-900 mb-2">Apakah TradingSafe sudah terdaftar secara resmi?</h4>
-                        <p class="text-sm text-slate-600 leading-relaxed">
-                            Secara korporasi, TradingSafe telah terdaftar resmi melalui sistem <strong>OSS (Online Single Submission)</strong> untuk izin operasional teknologi informasi. Terkait regulasi finansial, saat ini kami sedang dalam tahap audit mendalam untuk lisensi <strong>Bappebti</strong> dan <strong>OJK</strong>. Dikarenakan standar kepatuhan yang sangat tinggi, proses audit ini diperkirakan memakan waktu sekitar 1 tahun guna memastikan perlindungan maksimal bagi seluruh pengguna.
-                        </p>
+                        <!--
+    REPLACEMENT: Replaced the dense paragraph with a structured list.
+    This improves readability and frames the compliance journey more professionally.
+    Each point has an icon for better visual scanning.
+-->
+<ul class="space-y-4 text-sm text-slate-600">
+    <li class="flex items-start">
+        <i class="fas fa-check-circle text-blue-500 mt-1 mr-3 flex-shrink-0"></i>
+        <span><strong>Terdaftar di OSS:</strong> Secara korporasi, TradingSafe telah memiliki NIB (Nomor Induk Berusaha) yang terverifikasi melalui sistem Online Single Submission (OSS), mengesahkan kami sebagai entitas bisnis teknologi yang legal di Indonesia.</span>
+    </li>
+    <li class="flex items-start">
+        <i class="fas fa-hourglass-half text-blue-500 mt-1 mr-3 flex-shrink-0"></i>
+        <span><strong>Menuju Lisensi Penuh (Bappebti & OJK):</strong> Kami berkomitmen pada standar tertinggi keamanan finansial. Saat ini, kami secara proaktif sedang menjalani proses audit kepatuhan yang komprehensif untuk mendapatkan lisensi resmi dari Bappebti dan OJK.</span>
+    </li>
+    <li class="flex items-start">
+        <i class="fas fa-shield-alt text-blue-500 mt-1 mr-3 flex-shrink-0"></i>
+        <span><strong>Fokus pada Perlindungan Pengguna:</strong> Proses audit mendalam ini adalah bukti komitmen kami untuk membangun platform yang 100% patuh dan aman, memastikan setiap aset dan transaksi Anda dilindungi oleh kerangka regulasi yang paling ketat.</span>
+    </li>
+</ul>
+
                     </div>
                 </div>
             </div>
