@@ -200,20 +200,37 @@ try {
             </div>
 
             <!-- [MODIFIED] Manual Target Selection Section -->
+                        <!-- [MODIFIED] Manual Target Selection Section -->
             <div id="manual-pair-section">
                 <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Target Koin</label>
                 <div id="pair-inputs" class="space-y-2">
-                    <!-- Input changed from text to a select dropdown -->
+                    <?php
+                    // Explode the saved pairs string into an array.
+                    $saved_pairs = !empty($bot_settings['pair']) ? explode(',', $bot_settings['pair']) : [];
+                    
+                    // If there are no saved pairs, create one empty input to start with.
+                    if (empty($saved_pairs)) {
+                        $saved_pairs[] = '';
+                    }
+
+                    foreach ($saved_pairs as $index => $pair):
+                    ?>
                     <div class="flex items-center gap-2">
                         <select name="pairs[]" class="coin-select w-full border border-slate-200 rounded-xl p-3 text-sm font-bold uppercase bg-white appearance-none">
-                            <!-- Options will be populated by JavaScript -->
-                            <!-- Show saved value as the default selected option -->
-                            <option value="<?= htmlspecialchars($bot_settings['pair']) ?>" selected><?= htmlspecialchars($bot_settings['pair']) ?></option>
+                            <!-- JS will populate this. We pre-select the saved value. -->
+                            <option value="<?= htmlspecialchars($pair) ?>" selected><?= htmlspecialchars(empty($pair) ? 'Pilih Koin...' : $pair) ?></option>
                         </select>
-                        <button type="button" onclick="addPairInput()" class="bg-blue-500 text-white rounded-full w-8 h-8 flex-shrink-0 flex items-center justify-center font-bold text-xl">+</button>
+                        
+                        <?php if ($index === 0): // Show '+' on the first line ?>
+                            <button type="button" onclick="addPairInput()" class="bg-blue-500 text-white rounded-full w-8 h-8 flex-shrink-0 flex items-center justify-center font-bold text-xl">+</button>
+                        <?php else: // Show '-' on subsequent lines ?>
+                            <button type="button" onclick="this.parentElement.remove()" class="bg-red-500 text-white rounded-full w-8 h-8 flex-shrink-0 flex items-center justify-center font-bold">-</button>
+                        <?php endif; ?>
                     </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
+
             
             <!-- Auto-Detect Info Panel -->
             <div id="auto-detect-info" class="hidden">
@@ -268,47 +285,71 @@ try {
 <!-- Include Lightweight Charts library -->
 <script src="assets/js/chart.js"></script>
 
-
-    <!-- ======================================================================== -->
-    <!-- JAVASCRIPT BARU                                                        -->
-    <!-- ======================================================================== -->
 <!-- ======================================================================== -->
-<!-- JAVASCRIPT BARU                                                        -->
+<!-- JAVASCRIPT LOGIC (ADAPTED FROM PRO MODE FOR RELIABILITY)               -->
+<!-- ======================================================================== -->
 <script>
 // ===================================================================
-// 1. CHART SYSTEM (Sistem Grafik Real-time)
+// 1. GLOBAL STATE & CACHE
+// ===================================================================
+const API_KEY_SET = <?= json_encode(!empty($bot_settings['api_key'])) ?>;
+let pairMode = 'manual';
+// Global cache for the coin list to avoid multiple API calls.
+let coinListData = []; 
+
+// ===================================================================
+// 2. CHART SYSTEM (Grafik Real-time)
 // ===================================================================
 let chartObj = null;
 let candleSeries = null;
 
 function initChart() {
-    // Initialization logic for the chart...
     const container = document.getElementById('tv-chart-container');
-    if (!container || typeof LightweightCharts === 'undefined') return;
+    if (!container || typeof LightweightCharts === 'undefined') {
+        console.error("Chart container or Library not found!");
+        return;
+    }
     try {
         chartObj = LightweightCharts.createChart(container, {
             width: container.clientWidth, height: 350,
             layout: { background: { color: '#ffffff' }, textColor: '#333' },
             timeScale: { timeVisible: true, secondsVisible: false },
         });
-        candleSeries = chartObj.addCandlestickSeries({
-            upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
-            wickUpColor: '#26a69a', wickDownColor: '#ef5350',
-        });
+
+        // [FIX] Add fallback for different library versions
+        try {
+            // Modern/correct method
+            candleSeries = chartObj.addCandlestickSeries({
+                upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
+                wickUpColor: '#26a69a', wickDownColor: '#ef5350',
+            });
+        } catch (e) {
+            console.warn("Using fallback for chart series initialization.");
+            // Fallback for older or slightly different library versions
+            candleSeries = chartObj.addSeries(LightweightCharts.CandlestickSeries);
+        }
+
+        // Initial data load and set interval for updates
         loadChartData();
         setInterval(loadChartData, 5000);
-    } catch (err) { console.error("Chart init failed:", err); }
+
+    } catch (err) {
+        console.error("Chart initialization failed:", err);
+    }
 }
 
+
 async function loadChartData() {
-    // Logic to load and update chart data...
     if (!candleSeries) return;
+    // Use the value from the *first* dropdown as the chart's main pair
     const firstPairInput = document.querySelector('select[name="pairs[]"]');
     if (!firstPairInput || !firstPairInput.value) return;
+    
     const pair = firstPairInput.value.toLowerCase().replace('/', '_');
     const statusEl = document.getElementById('chart-status');
+    statusEl.textContent = 'Memuat...';
+
     try {
-        statusEl.textContent = 'Memuat...';
         const res = await fetch(`api/chart_data.php?pair=${pair}`);
         const json = await res.json();
         if (json.status === 'success' && json.data.length > 0) {
@@ -323,52 +364,64 @@ async function loadChartData() {
     } catch (e) {
         statusEl.textContent = 'Gagal Memuat';
         statusEl.className = 'text-xs font-bold text-red-500';
+        console.error("Chart data failed to load:", e);
     }
 }
 
 // ===================================================================
-// 2. FORM & SETTINGS LOGIC (Logika Pengaturan Form)
+// 3. COIN/PAIR SELECTION LOGIC (Logika Pilihan Koin)
 // ===================================================================
-const API_KEY_SET = <?= json_encode(!empty($bot_settings['api_key'])) ?>;
-let pairMode = 'manual';
-let coinListData = []; // [NEW] Global cache for coin list data.
 
 /**
- * [MODIFIED] Fetches coin list and populates the initial select dropdown.
+ * Fetches the master list of all available coins from the local API.
+ * This runs only once and stores the result in the `coinListData` cache.
  */
-async function fetchAndPopulateCoinList() {
+async function fetchMasterCoinList() {
+    if (coinListData.length > 0) return Promise.resolve(); // Use cache if available
+
     try {
-        const response = await fetch('api/market_scanner.php');
-        if (!response.ok) throw new Error('Failed to fetch market list.');
+        // [FIX] Using the same reliable API as Pro Mode
+        const response = await fetch('api/get_indodax_pairs.php'); 
+        
+        if (!response.ok) {
+            // Throw an error if the HTTP response is not 2xx
+            throw new Error(`API request failed with status ${response.status}`);
+        }
+
         const json = await response.json();
         
-        if (json.status === 'success' && Array.isArray(json.data)) {
-            // Cache the fetched data.
-            coinListData = json.data.map(coin => coin.pair.replace('_', '/').toUpperCase());
-            // Populate the first select dropdown that already exists on the page.
-            populateSelectWithOptions(document.querySelector('.coin-select'));
+        // Check if the response from the API is successful and contains data
+        if ((json.status === 'success' || json.status === 'fallback') && Array.isArray(json.data)) {
+            // [FIX] Adapt to the data structure of get_indodax_pairs.php, which is {id, name}
+            // We take the 'id' (e.g., "btc_idr") and format it to "BTC/IDR"
+            coinListData = json.data.map(coin => coin.id.replace('_', '/').toUpperCase());
+            console.log("Master coin list loaded successfully via get_indodax_pairs.php");
+        } else {
+            // Handle cases where the JSON is valid but indicates an error
+            throw new Error(json.message || "Invalid data format from API.");
         }
     } catch (e) {
-        console.error("Could not load coin list:", e.message);
+        // This will now catch network errors, HTTP errors, and JSON parsing/validation errors
+        console.error("CRITICAL: Could not load master coin list. " + e.message);
     }
 }
 
+
 /**
- * [NEW] Populates a given select element with options from the cached coin list.
+ * Populates a single <select> dropdown element with options from the cached list.
  * @param {HTMLElement} selectElement - The <select> element to populate.
  */
 function populateSelectWithOptions(selectElement) {
     if (!selectElement || coinListData.length === 0) return;
 
-    const currentValue = selectElement.value; // Preserve current value if any.
-    selectElement.innerHTML = '<option value="" disabled>--- Pilih Koin ---</option>'; // Placeholder.
+    const currentValue = selectElement.value; // Preserve the currently selected value.
+    selectElement.innerHTML = '<option value="" disabled>--- Pilih Koin ---</option>'; // Add a placeholder.
 
-    // Create and append an option for each coin in the cached list.
     coinListData.forEach(coinPair => {
         const option = document.createElement('option');
         option.value = coinPair;
         option.textContent = coinPair;
-        // Re-select the previous value if it exists in the new list.
+        // If this coin was the one previously selected, re-select it.
         if (coinPair === currentValue) {
             option.selected = true;
         }
@@ -377,93 +430,145 @@ function populateSelectWithOptions(selectElement) {
 }
 
 /**
- * [MODIFIED] Adds a new select dropdown for choosing a target coin.
+ * Creates and adds a new dropdown for selecting an additional coin.
+ * This is called when the '+' button is clicked.
  */
 function addPairInput() {
     const container = document.getElementById('pair-inputs');
+    if (!container) return;
+
     const newPairWrapper = document.createElement('div');
     newPairWrapper.className = 'flex items-center gap-2';
 
-    // Create the new select element.
+    // Create the new <select> element
     const newSelect = document.createElement('select');
     newSelect.name = 'pairs[]';
     newSelect.className = 'coin-select w-full border border-slate-200 rounded-xl p-3 text-sm font-bold uppercase bg-white appearance-none';
     
-    // Create the remove button.
+    // Create the remove ('-') button
     const removeBtn = document.createElement('button');
     removeBtn.type = 'button';
     removeBtn.onclick = function() { this.parentElement.remove(); };
     removeBtn.className = 'bg-red-500 text-white rounded-full w-8 h-8 flex-shrink-0 flex items-center justify-center font-bold';
     removeBtn.textContent = '-';
 
-    // Append elements to the DOM.
+    // Append new elements to the DOM
     newPairWrapper.appendChild(newSelect);
     newPairWrapper.appendChild(removeBtn);
     container.appendChild(newPairWrapper);
 
-    // Populate the newly created dropdown with coin options.
+    // Immediately populate the new dropdown with the cached coin list.
     populateSelectWithOptions(newSelect);
 }
 
+// ===================================================================
+// 4. FORM SAVING LOGIC (Logika Simpan Pengaturan)
+// ===================================================================
+
 async function saveStrategy(isActive, isSimulation = false) {
-    // ... (saveStrategy logic remains the same, but reads from select)
     if (isActive === 1 && !isSimulation && !API_KEY_SET) {
-        alert("🚨 API Key Belum Terpasang!"); return;
+        alert("🚨 API Key Belum Terpasang! Silakan pasang di halaman Pengaturan.");
+        return;
     }
+
     const btn = event.target;
     btn.disabled = true;
+    btn.textContent = 'Menyimpan...';
 
-    // [MODIFIED] Query for select elements instead of text inputs.
+    // Query for all selected pairs from all dropdowns.
     const pairInputs = document.querySelectorAll('select[name="pairs[]"]');
-    const pairs = Array.from(pairInputs).map(input => input.value).filter(v => v);
+    const pairs = Array.from(pairInputs).map(input => input.value).filter(v => v); // Filter out empty selections.
 
     const data = {
         target_profit: document.getElementById('target_profit').value,
         stop_loss: document.getElementById('stop_loss').value,
     };
     
+    // Determine which mode is active and set data accordingly.
     if (pairMode === 'manual') {
-        data.pair = pairs.join(','); data.use_auto_detect = 0;
+        data.pair = pairs.join(','); // Join multiple pairs with a comma.
+        data.use_auto_detect = 0;
     } else {
-        data.pair = ''; data.use_auto_detect = 1;
+        data.pair = ''; // Clear pairs if in auto mode.
+        data.use_auto_detect = 1;
     }
-    if (isActive !== undefined) data.is_active = isActive;
+    
+    // Only include 'is_active' if a start/stop button was pressed.
+    if (isActive !== undefined) {
+        data.is_active = isActive;
+    }
 
     try {
         const response = await fetch('api/save_config.php', { 
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify(data) 
         });
-        if (!response.ok) throw new Error('Server error');
+        if (!response.ok) throw new Error('Respon server tidak baik.');
         alert("✅ Pengaturan berhasil disimpan!");
-        if (isActive !== undefined) setTimeout(() => location.reload(), 500);
+        // Reload the page if the bot was started or stopped to reflect status.
+        if (isActive !== undefined) {
+            setTimeout(() => location.reload(), 500);
+        }
     } catch (e) { 
-        alert("❌ Gagal menyimpan: " + e.message); 
+        alert("❌ Gagal menyimpan pengaturan: " + e.message); 
     } finally {
+        // Restore button state
         btn.disabled = false;
+        // Restore original button text based on what was clicked
+        if (isActive === 1) btn.textContent = '🚀 START ENGINE';
+        else if (isActive === 0) btn.textContent = '🛑 STOP';
+        else btn.textContent = '💾 SIMPAN';
     }
 }
 
 async function saveSingleSetting(key, value) {
-    // ... (saveSingleSetting logic is unchanged)
     let finalValue = (typeof value === 'boolean') ? (value ? 1 : 0) : value;
     try {
         await fetch('api/save_config.php', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ [key]: finalValue })
         });
-    } catch (e) { alert('❌ Gagal menyimpan: ' + e.message); }
+        // Optionally, add a small visual indicator for success.
+    } catch (e) { 
+        alert('❌ Gagal menyimpan setting: ' + e.message); 
+    }
 }
 
 // ===================================================================
-// 3. EVENT LISTENERS (Inisialisasi & Interaksi UI)
+// 5. INITIALIZATION (Fungsi yang Dijalankan Saat Halaman Dimuat)
 // ===================================================================
-document.addEventListener('DOMContentLoaded', () => {
-    // [MODIFIED] Fetch the coin list to populate the initial dropdown.
-    fetchAndPopulateCoinList();
+document.addEventListener('DOMContentLoaded', async () => {
     
+    // --- Step 1: Fetch the master coin list first. ---
+    // The 'await' ensures that the coin list is ready before we do anything else.
+    await fetchMasterCoinList();
+
+    // --- Step 2: Now that the list is cached, populate all existing dropdowns. ---
+    document.querySelectorAll('.coin-select').forEach(selectElement => {
+        populateSelectWithOptions(selectElement);
+    });
+    
+    // --- Step 3: Initialize the chart. ---
     initChart();
 
-    // ... (Mode toggle button listeners are unchanged)
+    // --- Step 4: Set up UI event listeners. ---
+
+    // Accordion FAQ Logic
+    document.querySelectorAll('.faq-item').forEach(item => {
+        const question = item.querySelector('.faq-question');
+        const answer = item.querySelector('.faq-answer');
+        const arrow = item.querySelector('.faq-arrow');
+
+        question.addEventListener('click', () => {
+            const isHidden = answer.classList.contains('hidden');
+            answer.classList.toggle('hidden', !isHidden);
+            arrow.classList.toggle('rotate-180', isHidden);
+        });
+    });
+
+    // Mode toggle button listeners
     const manualBtn = document.getElementById('manual-mode-btn');
     const autoBtn = document.getElementById('auto-mode-btn');
     const manualSection = document.getElementById('manual-pair-section');
@@ -471,14 +576,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     manualBtn.addEventListener('click', () => {
         pairMode = 'manual';
-        manualSection.style.display = 'block'; autoInfo.style.display = 'none';
+        manualSection.style.display = 'block';
+        autoInfo.style.display = 'none';
         manualBtn.className = 'w-full p-3 rounded-xl text-sm font-bold border-2 border-blue-500 bg-blue-50 text-blue-700';
         autoBtn.className = 'w-full p-3 rounded-xl text-sm font-bold border-2 border-slate-200 bg-slate-50 text-slate-500';
     });
     
     autoBtn.addEventListener('click', () => {
         pairMode = 'auto';
-        manualSection.style.display = 'none'; autoInfo.style.display = 'block';
+        manualSection.style.display = 'none';
+        autoInfo.style.display = 'block';
         autoBtn.className = 'w-full p-3 rounded-xl text-sm font-bold border-2 border-blue-500 bg-blue-50 text-blue-700';
         manualBtn.className = 'w-full p-3 rounded-xl text-sm font-bold border-2 border-slate-200 bg-slate-50 text-slate-500';
     });
