@@ -1,0 +1,8 @@
+{
+    "bots": [
+        {
+            "name": "Sniper Engine",
+            "process_name": "sniper_engine"
+        }
+    ]
+}
