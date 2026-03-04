@@ -112,22 +112,39 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // --- FUNGSI: Memuat API Keys dari Server ---
+       // --- FUNGSI: Memuat API Keys dari Server ---
     async function loadApiKeys() {
+        // Show a loading skeleton while fetching data.
         listContainer.innerHTML = `<div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm animate-pulse"><div class="h-8 bg-slate-200 rounded w-1/3"></div></div>`;
         try {
-            // FIX: Calling the correct endpoint with the correct action parameter.
+            // Fetch all key and exchange data from the server.
             const response = await fetch(`${API_URL}?action=get_all`);
-            if (!response.ok) { // Check for HTTP errors like 404 or 500
+            // Handle HTTP errors like 404 or 500.
+            if (!response.ok) {
                  const errorText = await response.text();
                  throw new Error(`Server responded with status ${response.status}: ${errorText}`);
             }
-            const result = await response.json(); // This is where the JSON.parse error happens.
-            if (result.error) throw new Error(result.error);
+            // Parse the JSON response from the server.
+            const result = await response.json();
+            // Handle application-level errors sent from the PHP backend.
+            if (result.error) {
+                throw new Error(result.error);
+            }
+            
+            // CRITICAL FIX: Pass the received data to the renderKeys function.
+            // This function populates both the dropdown and the list of keys.
+            renderKeys(result);
             
         } catch (error) {
-            listContainer.innerHTML = `<div class="bg-red-100 text-red-700 p-4 rounded-lg"><strong>Error:</strong> ${error.message}</div>`;
+            // Display a user-friendly error message in the list container.
+            listContainer.innerHTML = `<div class="bg-red-100 text-red-700 p-4 rounded-lg"><strong>Error:</strong> Gagal memuat data. ${error.message}</div>`;
+            
+            // Also disable and clear the dropdown on error to prevent confusion.
+            exchangeInput.innerHTML = '<option>Gagal memuat...</option>';
+            exchangeInput.disabled = true;
         }
     }
+
 
     // --- FUNGSI: Merender Daftar API Keys ke Tampilan ---
     // --- FUNGSI: Merender Daftar API Keys & Mengisi Form ---

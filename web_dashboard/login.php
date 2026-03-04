@@ -1,5 +1,6 @@
 <?php
-// web_dashboard/login.php
+// FILE: web_dashboard/login.php (VERSI FINAL & LENGKAP)
+
 session_start();
 require_once 'components/database.php';
 
@@ -17,7 +18,7 @@ if (file_exists('components/config_google.php')) {
 // =======================================================================
 if (isset($_GET['code'])) {
     if (!$google_active) { die("Google Config Missing!"); }
-    
+
     // A. Tukar "Kode" jadi "Tiket Masuk" (Access Token)
     $token_url = 'https://oauth2.googleapis.com/token';
     $post_data = [
@@ -27,11 +28,11 @@ if (isset($_GET['code'])) {
         'redirect_uri'  => GOOGLE_REDIRECT_URL,
         'grant_type'    => 'authorization_code'
     ];
-    
+
     $ch = curl_init($token_url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data));
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Penting buat Localhost
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     $response = json_decode(curl_exec($ch), true);
     curl_close($ch);
 
@@ -52,6 +53,9 @@ if (isset($_GET['code'])) {
         $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$g_email]);
         $user = $stmt->fetch();
+        
+        // Muat logger sekali saja
+        require_once __DIR__ . '/components/logger.php';
 
         if ($user) {
             // ---> KASUS 1: USER LAMA (LOGIN)
@@ -59,27 +63,33 @@ if (isset($_GET['code'])) {
             $_SESSION['username'] = $user['username'];
             $_SESSION['email'] = $user['email'];
             $_SESSION['is_verified'] = $user['is_verified'];
+
+            // Catat log untuk login via Google
+            log_user_action($pdo, $user['id'], 'login_google_success');
+
         } else {
             // ---> KASUS 2: USER BARU (REGISTER OTOMATIS)
-            // Buat username dari nama google (hapus spasi)
             $username = str_replace(' ', '', strtolower($g_name)) . rand(10,99);
-            // Password dummy (karena dia login pake google)
             $dummy_pass = password_hash(uniqid(), PASSWORD_DEFAULT); 
             
             $sql = "INSERT INTO users (username, email, password, google_id, is_verified, full_name) VALUES (?, ?, ?, ?, 1, ?)";
             $stmtInsert = $pdo->prepare($sql);
             $stmtInsert->execute([$username, $g_email, $dummy_pass, $g_id, $g_name]);
             
-            // Langsung set session
-            $_SESSION['user_id'] = $pdo->lastInsertId();
+            $new_user_id = $pdo->lastInsertId();
+
+            $_SESSION['user_id'] = $new_user_id;
             $_SESSION['username'] = $username;
             $_SESSION['email'] = $g_email;
-            $_SESSION['is_verified'] = 1; // User Google otomatis Verified
+            $_SESSION['is_verified'] = 1;
+
+            // Catat log untuk registrasi via Google
+            log_user_action($pdo, $new_user_id, 'register_google_success');
         }
 
-        // D. TENDANG KE DASHBOARD (INI KUNCINYA!)
+        // D. TENDANG KE DASHBOARD
         header("Location: easy.php");
-        exit; // Stop script di sini biar gak muat halaman login lagi
+        exit;
     }
 }
 
@@ -96,10 +106,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = $stmt->fetch();
 
     if ($data && password_verify($pass_input, $data['password'])) {
+        // Set Sesi
         $_SESSION['user_id']  = $data['id'];
         $_SESSION['username'] = $data['username'];
         $_SESSION['email']    = $data['email'];
         $_SESSION['is_verified'] = $data['is_verified']; 
+        
+        // Panggil Logger untuk mencatat aktivitas login
+        require_once __DIR__ . '/components/logger.php';
+        log_user_action($pdo, $data['id'], 'login_manual_success');
+
+        // Arahkan ke dashboard
         header("Location: easy.php");
         exit;
     } else {
@@ -139,7 +156,7 @@ if ($google_active) {
         </div>
 
         <?php if($error): ?>
-            <div class="bg-red-50 text-red-600 text-xs p-3 rounded-lg mb-6 text-center font-bold"><?= $error ?></div>
+            <div class="bg-red-50 text-red-600 text-xs p-3 rounded-lg mb-6 text-center font-bold"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
 
         <form method="POST" class="space-y-5">
@@ -165,7 +182,7 @@ if ($google_active) {
         </div>
 
         <?php if ($google_active): ?>
-            <a href="<?= $google_login_url ?>" class="flex items-center justify-center gap-3 w-full border border-slate-200 py-3 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition">
+            <a href="<?= htmlspecialchars($google_login_url) ?>" class="flex items-center justify-center gap-3 w-full border border-slate-200 py-3 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition">
                 <img src="https://www.svgrepo.com/show/355037/google.svg" class="w-5 h-5">
                 Masuk dengan Google
             </a>

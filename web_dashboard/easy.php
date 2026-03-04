@@ -87,6 +87,21 @@ try {
     <?php require_once 'components/navbar.php'; ?>
 
     <main class="max-w-7xl mx-auto px-4 space-y-6 mt-6">
+
+
+
+        <!-- (BARU) Tombol Kembali ke Admin saat Impersonasi -->
+        <?php if (isset($_SESSION['is_impersonating']) && $_SESSION['is_impersonating'] === true): ?>
+        <div class="bg-red-600 text-white text-center p-3 rounded-xl mb-6 shadow-lg">
+            <p>
+                Anda sedang login sebagai <strong><?= htmlspecialchars($_SESSION['username']); ?></strong>. 
+                <a href="stop_impersonating.php" class="font-bold underline hover:text-red-200">Kembali ke Akun Admin</a>
+            </p>
+        </div>
+        <?php endif; ?>
+
+        <!-- Bagian Banner Status (Verifikasi, Expired, dll) -->
+
         
         <!-- Bagian Banner Status (Verifikasi, Expired, dll) -->
         <!-- ======================================================================== -->
