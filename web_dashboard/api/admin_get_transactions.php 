@@ -1,0 +1,56 @@
+<?php
+// FILE BARU: web_dashboard/api/admin_get_transactions.php
+
+session_start();
+header('Content-Type: application/json');
+
+// Keamanan: Pastikan hanya admin yang bisa akses
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'error' => 'Akses ditolak.']);
+    exit;
+}
+
+require_once __DIR__ . '/../components/database.php';
+
+try {
+    // 1. Hitung total transaksi yang masih 'pending'
+    $pending_stmt = $pdo->query("SELECT COUNT(*) FROM transactions WHERE status = 'pending'");
+    $total_pending = $pending_stmt->fetchColumn();
+
+    // 2. Ambil 20 transaksi terakhir untuk ditampilkan di daftar
+    // Kita join dengan tabel 'users' untuk mendapatkan 'username'
+    $transactions_stmt = $pdo->query("
+        SELECT 
+            t.id, 
+            t.user_id,
+            t.status,
+            t.proof_file,
+            t.created_at,
+            u.username
+        FROM 
+            transactions t
+        LEFT JOIN 
+            users u ON t.user_id = u.id
+        ORDER BY 
+            t.created_at DESC
+        LIMIT 20
+    ");
+    $transactions = $transactions_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // 3. Kirim respons dalam format JSON
+    echo json_encode([
+        'success' => true,
+        'total_pending' => (int)$total_pending,
+        'transactions' => $transactions
+    ]);
+
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false, 
+        'error' => 'Database Error',
+        'details' => $e->getMessage()
+    ]);
+}
+?>

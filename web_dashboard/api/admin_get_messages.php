@@ -1,5 +1,5 @@
 <?php
-// File: web_dashboard/api/admin_get_messages.php
+// FILE: web_dashboard/api/admin_get_messages.php
 
 session_start();
 header('Content-Type: application/json');
@@ -24,14 +24,15 @@ $user_id = $_GET['user_id'];
 
 try {
     // 1. Ambil semua pesan untuk user_id yang dipilih
+    // PERUBAHAN DI SINI: Tambahkan 'id' ke query SELECT
     $stmt = $pdo->prepare(
-        "SELECT message, sender, timestamp 
+        "SELECT id, message, sender, timestamp 
          FROM support_chats 
          WHERE user_id = ? 
          ORDER BY timestamp ASC"
     );
     $stmt->execute([$user_id]);
-    $messages = $stmt->fetchAll();
+    $messages = $stmt->fetchAll(PDO::FETCH_ASSOC); // Menggunakan FETCH_ASSOC
 
     // 2. Tandai semua pesan dari user ini sebagai "sudah dibaca"
     $updateStmt = $pdo->prepare(

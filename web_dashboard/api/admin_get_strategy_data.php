@@ -23,11 +23,20 @@ function get_setting($pdo, $key, $default_value = null) {
 }
 
 try {
-    // 2. Kalkulasi Global PnL (Profit and Loss)
-    // TODO: Ganti ini dengan query sesungguhnya ke tabel trade/log Anda.
-    // Ini adalah placeholder.
-    // Contoh query: "SELECT SUM(profit_amount) FROM trade_history WHERE status = 'closed'"
-    $global_pnl = 78500000; // Placeholder: 78.5 Juta
+    // 2. Kalkulasi Global PnL (Profit and Loss) - MENGGUNAKAN QUERY ASLI
+    // Asumsi tabel = trade_history, kolom = profit_amount
+    // Tambahan: Cek jika tabel ada sebelum query.
+    $global_pnl = 0;
+    $table_check = $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name='trade_history'");
+    if ($table_check->fetchColumn()) {
+        $pnl_stmt = $pdo->query("SELECT SUM(profit_amount) FROM trade_history WHERE status = 'closed'");
+        $result = $pnl_stmt->fetchColumn();
+        // Jika tidak ada trading, hasilnya bisa null. Ubah ke 0.
+        if ($result !== null) {
+            $global_pnl = $result;
+        }
+    }
+
 
     // 3. Ambil Pengaturan dari Database
     $admin_fee = get_setting($pdo, 'admin_fee_percentage', '5'); // Default 5%
@@ -48,7 +57,7 @@ try {
     http_response_code(500);
     echo json_encode([
         'success' => false,
-        'error' => 'Database Error', 
+        'error' => 'Database Error',
         'details' => $e->getMessage()
     ]);
 }
