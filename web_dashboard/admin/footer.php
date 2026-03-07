@@ -115,17 +115,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ===>>> BAGIAN BARU UNTUK STRATEGY <<<===
-    if (currentPage === 'strategy') {
-        const pnlContainer = document.getElementById('global-pnl-container');
-        if(pnlContainer) {
-            loadStrategyData();
-            // Muat ulang data PnL setiap 10 detik
-            setInterval(() => loadStrategyData(true), 10000);
+   if (currentPage === 'strategy') {
+    const pnlContainer = document.getElementById('global-pnl-stat');
+    if(pnlContainer) {
+        loadStrategyData();
+        setInterval(() => loadStrategyData(true), 10000); 
+        
+        const saveBtn = document.getElementById('save-settings-btn');
+        if(saveBtn) saveBtn.onclick = handleSaveSettings;
 
-            // Tambahkan event listener untuk tombol Simpan
-            document.getElementById('save-settings-btn').onclick = handleSaveSettings;
-        }
+        // ===>>> TAMBAHKAN 3 BARIS INI <<<===
+        loadSubscriptionData();
+        setInterval(loadSubscriptionData, 20000); 
     }
+}
+
     
     // Jalankan jika di halaman 'faq'
     if (currentPage === 'faq') {
@@ -251,6 +255,68 @@ document.addEventListener('DOMContentLoaded', () => {
             saveBtn.innerHTML = '<i class="fa-solid fa-save mr-2"></i>Simpan Perubahan';
         }
     }
+
+
+    // ===>>> FUNGSI BARU UNTUK TRANSAKSI SUBSCRIBER <<<===
+// ===>>> FUNGSI BARU UNTUK TRANSAKSI SUBSCRIBER <<<===
+async function loadSubscriptionData() {
+    try {
+        const res = await fetch('../api/admin_get_transactions.php');
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const data = await res.json();
+        if (!data.success) throw new Error(data.details || 'API request failed');
+
+        const totalEl = document.getElementById('total-pending-transactions');
+        if (totalEl) {
+            totalEl.textContent = data.total_pending;
+            totalEl.classList.remove('animate-pulse');
+        }
+
+        const listContainer = document.getElementById('transaction-list-container');
+        if (listContainer) {
+            listContainer.innerHTML = '';
+            
+            if (data.transactions.length === 0) {
+                listContainer.innerHTML = '<div class="text-center text-slate-500 pt-16"><i class="fa-solid fa-file-circle-check text-2xl"></i><p class="mt-2">Belum ada transaksi.</p></div>';
+                return;
+            }
+
+            data.transactions.forEach(tx => {
+                const txDate = new Date(tx.created_at);
+                const formattedDate = txDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+                const formattedTime = txDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+
+                let statusBadge;
+                switch(tx.status) {
+                    case 'pending': statusBadge = '<span class="bg-yellow-100 text-yellow-800 text-xs font-semibold me-2 px-2.5 py-0.5 rounded-full">Pending</span>'; break;
+                    case 'verified': statusBadge = '<span class="bg-green-100 text-green-800 text-xs font-semibold me-2 px-2.5 py-0.5 rounded-full">Verified</span>'; break;
+                    case 'rejected': statusBadge = '<span class="bg-red-100 text-red-800 text-xs font-semibold me-2 px-2.5 py-0.5 rounded-full">Rejected</span>'; break;
+                    default: statusBadge = `<span class="bg-gray-100 text-gray-800 text-xs font-semibold me-2 px-2.5 py-0.5 rounded-full">${escapeHTML(tx.status)}</span>`;
+                }
+
+                const item = document.createElement('div');
+                item.className = 'p-3 flex items-center justify-between bg-slate-50/50 hover:bg-slate-100/80 rounded-xl transition-all';
+                item.innerHTML = `
+                    <div class="flex-grow">
+                        <p class="font-bold text-slate-800 text-sm">${escapeHTML(tx.username || `User ID: ${tx.user_id}`)}</p>
+                        <p class="text-xs text-slate-500">${formattedDate} - ${formattedTime}</p>
+                    </div>
+                    <div class="flex items-center gap-3 flex-shrink-0">
+                        ${statusBadge}
+                        <a href="../uploads/proofs/${escapeHTML(tx.proof_file)}" target="_blank" class="px-3 py-1 bg-white border border-slate-300 text-slate-600 hover:bg-slate-50 text-xs font-bold rounded-lg transition-all">
+                            Lihat Bukti
+                        </a>
+                    </div>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+    } catch (e) {
+        console.error('Gagal memuat data transaksi:', e.message);
+        const listContainer = document.getElementById('transaction-list-container');
+        if(listContainer) listContainer.innerHTML = '<p class="text-red-500 p-4 text-center">Error: Gagal memuat transaksi.</p>';
+    }
+}
 
 
     // --- FUNGSI UNTUK HALAMAN FAQ ---\
